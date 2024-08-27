@@ -4,21 +4,23 @@ import { compare } from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { userDao } from "./dao";
 
-const { createUser, getUserByMail } = userDao;
+const { 
+  createUser, 
+  getUserByMail, 
+  getUserAll,
+  getUserById, 
+  deleteUser, 
+  updateUser 
+} = userDao;
 class UserService {
-  async createUser(user: IUser & { confirm_password: string }) {
-    const { confirm_password, password, email, ...rest } = user;
-
-    if (password !== confirm_password)
-      throw new Error("Las contraseñas no coinciden");
+  async createUser(user: IUser ) {
+    const { email } = user;
 
     const userFound = await getUserByMail(email);
     if (userFound) throw new Error("El usuario ya existe");
 
-    const userWithoutConfirmPassword = { ...rest, password, email };
-
     try {
-      const newUser = await createUser(userWithoutConfirmPassword);
+      const newUser = await createUser(user);
       return newUser;
     } catch (error) {
       throw Error((error as Error).message);
@@ -48,6 +50,46 @@ class UserService {
         { expiresIn: "1h" }
       );
       return token;
+    } catch (error) {
+      throw Error((error as Error).message);
+    }
+  }
+
+  async getUsers () {
+    try {
+      const users = await getUserAll();
+      return users;
+    } catch (error) {
+      throw Error((error as Error).message);
+    }
+  }
+
+  async getUser (id : string) {
+    try {
+      const user = await getUserById(id);
+     
+      return user;
+    } catch (error) {
+      throw Error((error as Error).message);
+    }
+  }
+
+  async deleteUser (id : string) {
+    try {
+      const user = await deleteUser(id);
+      return user;
+    } catch (error) {
+      throw Error((error as Error).message);
+    }
+  }
+  async updateUser (id : string, updatedData: Partial<IUser> ) {
+    try {
+      if (updatedData.password) {
+      const hashedPassword = await bcrypt.hash(updatedData.password, 10);
+      updatedData.password = hashedPassword; 
+    }
+      const user = await updateUser( id, updatedData );
+      return user;
     } catch (error) {
       throw Error((error as Error).message);
     }
