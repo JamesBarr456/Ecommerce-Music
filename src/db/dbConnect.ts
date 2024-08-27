@@ -1,4 +1,4 @@
-import { DB_HOST } from "../config";
+import { MONGO_URI } from "../config";
 import mongoose from "mongoose";
 
 const connectDB = async () => {
@@ -6,7 +6,7 @@ const connectDB = async () => {
     return;
   }
   try {
-    await mongoose.connect(DB_HOST);
+    await mongoose.connect(MONGO_URI);
     console.log(">>> DB is connected");
   } catch (error) {
     console.log("DB Connection Error", error);
