@@ -1,19 +1,19 @@
 import { IUser } from "./types";
 import { TOKEN_SECRET } from "../../config";
-import { compare } from "bcrypt";
+import bcrypt from "bcrypt";
 import { sign } from "jsonwebtoken";
 import { userDao } from "./dao";
 
-const { 
-  createUser, 
-  getUserByMail, 
+const {
+  createUser,
+  getUserByMail,
   getUserAll,
-  getUserById, 
-  deleteUser, 
-  updateUser 
+  getUserById,
+  deleteUser,
+  updateUser,
 } = userDao;
 class UserService {
-  async createUser(user: IUser ) {
+  async createUser(user: IUser) {
     const { email } = user;
 
     const userFound = await getUserByMail(email);
@@ -34,7 +34,7 @@ class UserService {
       const isValidEmailUser = await getUserByMail(email);
       if (!isValidEmailUser) throw new Error("invalid Email");
 
-      const isValidPassword = await compare(
+      const isValidPassword = await bcrypt.compare(
         password,
         isValidEmailUser.password!
       );
@@ -55,7 +55,7 @@ class UserService {
     }
   }
 
-  async getUsers () {
+  async getUsers() {
     try {
       const users = await getUserAll();
       return users;
@@ -64,17 +64,17 @@ class UserService {
     }
   }
 
-  async getUser (id : string) {
+  async getUser(id: string) {
     try {
       const user = await getUserById(id);
-     
+
       return user;
     } catch (error) {
       throw Error((error as Error).message);
     }
   }
 
-  async deleteUser (id : string) {
+  async deleteUser(id: string) {
     try {
       const user = await deleteUser(id);
       return user;
@@ -82,13 +82,13 @@ class UserService {
       throw Error((error as Error).message);
     }
   }
-  async updateUser (id : string, updatedData: Partial<IUser> ) {
+  async updateUser(id: string, updatedData: Partial<IUser>) {
     try {
       if (updatedData.password) {
-      const hashedPassword = await bcrypt.hash(updatedData.password, 10);
-      updatedData.password = hashedPassword; 
-    }
-      const user = await updateUser( id, updatedData );
+        const hashedPassword = await bcrypt.hash(updatedData.password, 10);
+        updatedData.password = hashedPassword;
+      }
+      const user = await updateUser(id, updatedData);
       return user;
     } catch (error) {
       throw Error((error as Error).message);

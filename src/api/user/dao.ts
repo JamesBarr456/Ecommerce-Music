@@ -2,11 +2,11 @@ import { IUser } from "./types";
 import { User } from "./model";
 
 class UserDao {
-  async getUserAll () {
+  async getUserAll() {
     try {
-      const users = await User.find(); // 
-      const sanitizedUsers = users.map(user => {
-        const { password, ...rest } = user;
+      const users = await User.find(); //
+      const sanitizedUsers = users.map((user) => {
+        const { password, ...rest } = user.toObject();
         return rest;
       });
 
@@ -19,9 +19,9 @@ class UserDao {
     try {
       const user = await User.findById(userId);
       if (!user) {
-      throw new Error('User not found');
-      } 
-      const { password, ...rest } = user; ;
+        throw new Error("User not found");
+      }
+      const { password, ...rest } = user.toObject();
       return rest;
     } catch (error) {
       throw Error((error as Error).message);
@@ -44,30 +44,30 @@ class UserDao {
       throw Error((error as Error).message);
     }
   }
-  async deleteUser(userId: string){
+  async deleteUser(userId: string) {
     try {
       const deletUser = await User.findByIdAndDelete(userId);
       return deletUser;
     } catch (error) {
-       throw Error((error as Error).message);
+      throw Error((error as Error).message);
     }
   }
   async updateUser(userId: string, updatedData: Partial<IUser>) {
-  try {
-    const updatedUser = await User.findByIdAndUpdate(
-      userId, 
-      { $set: updatedData }, 
-      { new: true, runValidators: true }
-    );
+    try {
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: updatedData },
+        { new: true, runValidators: true }
+      );
 
-    if (!updatedUser) {
-      throw new Error("User not found");
+      if (!updatedUser) {
+        throw new Error("User not found");
+      }
+
+      return updatedUser;
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
-
-    return updatedUser;
-  } catch (error) {
-    throw new Error((error as Error).message);
   }
-}
 }
 export const userDao = new UserDao();
