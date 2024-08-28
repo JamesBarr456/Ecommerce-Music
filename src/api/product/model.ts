@@ -1,6 +1,7 @@
 import { Schema, model } from "mongoose";
+import { IProduct } from "./types";
 
-const productSchema = new Schema({
+const productSchema = new Schema<IProduct>({
   name: {
     type: String,
     required: true,
@@ -46,8 +47,8 @@ const productSchema = new Schema({
   },
   status: {
     type: String,
-    enum: ["available", "out of stock", "discontinued"],
-    default: "available",
+    enum: ["disponible", "agotado", "discontinuado"],
+    default: "disponible",
   },
   discount: {
     type: Number,
@@ -55,4 +56,4 @@ const productSchema = new Schema({
   },
 });
 
-export const Product = model("Product", productSchema);
+export const Product = model<IProduct>("Product", productSchema);
