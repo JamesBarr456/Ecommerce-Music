@@ -1,4 +1,5 @@
-import { Schema, model } from "mongoose";
+import mongoose, { Schema, model } from "mongoose";
+
 import { IProduct } from "./types";
 
 const productSchema = new Schema<IProduct>({
@@ -16,7 +17,8 @@ const productSchema = new Schema<IProduct>({
     required: true,
   },
   category: {
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category",
     required: true,
   },
   brand: {

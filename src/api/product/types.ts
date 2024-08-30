@@ -1,29 +1,36 @@
-type ProductStatus = "disponible"|"agotado"| "discontinuado";
-type filterByPrice = "lower" | "higher";
+import mongoose from "mongoose";
+
+export type ProductStatus = "disponible" | "agotado" | "discontinuado";
+export type SortBy =
+  | "price_ascending"
+  | "price_descending"
+  | "alpha_ascending"
+  | "alpha_descending"
+  | "created_descending"
+  | "created_ascending";
 
 export interface IProduct {
-    _id: string | undefined;
-    name: string;
-    description: string;
-    price: number;
-    category: string; //--> mas adelante deberia ser una relacion con otro schema de category
-    brand: string;
-    stock: number;
-    sku: string;
-    images: string[]; 
-    createdAt: Date;
-    updatedAt: Date;
-    status: ProductStatus;
-    discount: number;
+  _id: string | undefined;
+  name: string;
+  description: string;
+  price: number;
+  brand: string;
+  stock: number;
+  sku: string;
+  images: string[];
+  createdAt: Date;
+  updatedAt: Date;
+  status: ProductStatus;
+  discount: number;
+  category: mongoose.Types.ObjectId;
 }
-
 
 export interface ISearchParams {
   category?: string;
-  brand?: string;
+  brand?: string; //---> deberia ser tambien otro Schema
   salersId?: string;
-  filterByPrice?: filterByPrice;
+  sort_by?: SortBy;
   priceRange?: string;
   page?: string;
-  limit?: string;
+  status?: ProductStatus;
 }
