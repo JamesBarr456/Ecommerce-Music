@@ -17,9 +17,15 @@ const productSchema = new Schema<IProduct>({
     required: true,
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Category",
-    required: true,
+    _id: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
+    name: {
+      type: String,
+      required: true,
+    },
   },
   brand: {
     type: String,
@@ -29,11 +35,6 @@ const productSchema = new Schema<IProduct>({
     type: Number,
     required: true,
     min: 0,
-  },
-  sku: {
-    type: String,
-    required: true,
-    unique: true,
   },
   images: {
     type: [String], // Array de URLs de imágenes

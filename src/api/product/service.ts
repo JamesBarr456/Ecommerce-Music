@@ -1,5 +1,6 @@
 import { IProduct, ISearchParams } from "./types";
 
+import { Category } from "../category/model";
 import { getSortObject } from "../../helpers/sorting";
 import { productDao } from "./dao";
 
@@ -13,8 +14,21 @@ const {
 
 class ProductService {
   async createProduct(data: IProduct) {
+    const category = await Category.findOne({ name: data.category });
+
+    if (!category) {
+      throw new Error("Category not found");
+    }
+    const productData = {
+      ...data,
+      category: {
+        _id: category._id,
+        name: category.name as string,
+      },
+    };
+
     try {
-      const newProduct = await createProduct(data);
+      const newProduct = await createProduct(productData);
       return newProduct;
     } catch (error) {
       throw Error((error as Error).message);

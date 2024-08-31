@@ -16,13 +16,15 @@ export interface IProduct {
   price: number;
   brand: string;
   stock: number;
-  sku: string;
   images: string[];
   createdAt: Date;
   updatedAt: Date;
   status: ProductStatus;
   discount: number;
-  category: mongoose.Types.ObjectId;
+  category: {
+    _id: mongoose.Types.ObjectId;
+    name: string;
+  };
 }
 
 export interface ISearchParams {
