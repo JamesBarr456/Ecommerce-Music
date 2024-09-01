@@ -57,6 +57,10 @@ const productSchema = new Schema<IProduct>({
     type: Number,
     default: 0,
   },
+  user: {
+    _id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    username: { type: String, required: true },
+  },
 });
 
 export const Product = model<IProduct>("Product", productSchema);

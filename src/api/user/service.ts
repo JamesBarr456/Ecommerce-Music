@@ -43,7 +43,7 @@ class UserService {
       const token = sign(
         {
           userId: isValidEmailUser._id,
-          email: isValidEmailUser.email,
+          username: isValidEmailUser.username,
           role: isValidEmailUser.role,
         },
         TOKEN_SECRET!,

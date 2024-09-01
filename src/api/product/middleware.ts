@@ -1,29 +1,38 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 
+import { IGetUserAuthInfoRequest } from "../../types/express";
 import { TOKEN_SECRET } from "../../config";
 import jwt from "jsonwebtoken";
 
-export function authenticateToken(
-  req: Request,
+interface JwtPayload {
+  userId: string;
+  username: string;
+}
+
+export const authMiddleware = (
+  req: IGetUserAuthInfoRequest,
   res: Response,
   next: NextFunction
-): void {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
-
+) => {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
   if (!token) {
-    res.sendStatus(401).json("No es un usuario logueado");
-    return;
+    return res.status(401).json({ message: "No token provided" });
   }
 
-  jwt.verify(token, TOKEN_SECRET!, (err, user) => {
-    if (err) {
-      res.sendStatus(403);
-      return; // Asegura que la función termina aquí
-    }
+  if (!TOKEN_SECRET) {
+    return res
+      .status(500)
+      .json({ message: "Internal server error: Missing token secret" });
+  }
 
-    req.user = user as any; // Guarda la información del vendedor en la request
-    next(); // Continúa con el siguiente middleware
-    return; // Opcional pero asegura que la función cumple con la expectativa de TypeScript
-  });
-}
+  try {
+    const decoded = jwt.verify(token, TOKEN_SECRET) as JwtPayload;
+    req.user = {
+      _id: decoded.userId,
+      username: decoded.username,
+    };
+    return next();
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
+  }
+};

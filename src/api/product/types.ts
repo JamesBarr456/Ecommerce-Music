@@ -25,6 +25,10 @@ export interface IProduct {
     _id: mongoose.Types.ObjectId;
     name: string;
   };
+  user: {
+    _id: mongoose.Types.ObjectId;
+    username: string;
+  };
 }
 
 export interface ISearchParams {

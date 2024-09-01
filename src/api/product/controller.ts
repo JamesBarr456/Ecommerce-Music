@@ -1,15 +1,30 @@
 import { Request, Response } from "express";
 
+import { IGetUserAuthInfoRequest } from "../../types/express";
 import { productService } from "./service";
 
 const { getProduct, getProducts, createProduct, deleteProduct, editProduct } =
   productService;
 
 class ProductController {
-  async createProduct(req: Request, res: Response) {
+  async createProduct(req: IGetUserAuthInfoRequest, res: Response) {
     const data = req.body;
+    const user = req.user;
+    console.log(user);
+
+    if (!user) {
+      return res.status(401).json({ message: "Unauthorized: No user found" });
+    }
+
+    const dataProduct = {
+      user: {
+        _id: user._id,
+        username: user.username,
+      },
+      ...data,
+    };
     try {
-      const newProduct = await createProduct(data);
+      const newProduct = await createProduct(dataProduct);
       return res
         .status(200)
         .json({ message: "Product create successfully", data: newProduct });
