@@ -33,7 +33,7 @@ export interface IProduct {
 
 export interface ISearchParams {
   category?: string;
-  brand?: string; //---> deberia ser tambien otro Schema
+  brand?: string;
   salersId?: string;
   sort_by?: SortBy;
   priceRange?: string;

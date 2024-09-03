@@ -1,7 +1,7 @@
 import { NextFunction, Response } from "express";
 
-import { IGetUserAuthInfoRequest } from "../../types/express";
-import { TOKEN_SECRET } from "../../config";
+import { IGetUserAuthInfoRequest } from "../types/express";
+import { TOKEN_SECRET } from "../config";
 import jwt from "jsonwebtoken";
 
 interface JwtPayload {
@@ -9,7 +9,7 @@ interface JwtPayload {
   username: string;
 }
 
-export const authMiddleware = (
+const authMiddleware = (
   req: IGetUserAuthInfoRequest,
   res: Response,
   next: NextFunction
@@ -36,3 +36,5 @@ export const authMiddleware = (
     res.status(401).json({ message: "Invalid token" });
   }
 };
+
+export default authMiddleware;
